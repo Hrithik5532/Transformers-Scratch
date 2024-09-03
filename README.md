@@ -14,7 +14,9 @@ The main objectives of this notebook are:
 To run this notebook, you'll need the following libraries:
 - PyTorch
 - NumPy
-- Matplotlib (for visualizations)
-- tqdm (for progress bars)
+- Tiktoken
+- Torchtext
+- Transformers
+- 
 
 You can install these dependencies using pip:
