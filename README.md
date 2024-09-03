@@ -20,3 +20,7 @@ To run this notebook, you'll need the following libraries:
 
 
 You can install these dependencies using pip:
+
+
+Also working on LLAMA 3 and Mixtral architecture.
+Soon I will upload the code to github.
