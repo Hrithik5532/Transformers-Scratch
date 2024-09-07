@@ -22,5 +22,8 @@ To run this notebook, you'll need the following libraries:
 You can install these dependencies using pip:
 
 
-Also working on LLAMA 3 and Mixtral architecture.
+Llama-3 architecture code updated.
+
+Working on a Mixture of Experts (MoE) Layers.
+
 Soon I will upload the code to github.
