@@ -2,11 +2,10 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AdamW
 import torch.nn as nn
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
-
 from preparedata import prepare_data
 from Llama3 import LLaMA3Model
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Hyperparameters
 num_epochs = 3
@@ -74,56 +73,17 @@ for epoch in range(num_epochs):
 
     avg_val_loss = total_val_loss / len(val_loader)
     print(f"Epoch {epoch+1}/{num_epochs}, Validation Loss: {avg_val_loss}")
-    
-import os
 
-    
-def save_model(model, tokenizer, output_dir):
-        # Create output directory if it doesn't exist
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        
-        # Save the model
-        model.to('cpu')  # Move the model to CPU before saving
-        torch.save(model.state_dict(), os.path.join(output_dir, 'model.pth'))
-        
-        # Save the tokenizer
-        tokenizer.save_pretrained(output_dir)
-        
-        print(f"Model and tokenizer saved to {output_dir}")
-        
-        
-def load_model(model_class, tokenizer_class, input_dir):
-    # Load the tokenizer
-    tokenizer = tokenizer_class.from_pretrained(input_dir)
-    
-    # Initialize the model (you need to know the model's hyperparameters)
-    model = model_class(
-        vocab_size=tokenizer.vocab_size,
-        d_model=768,  # Adjust these parameters as needed
-        num_layers=12,
-        num_heads=12,
-        d_ff=3072,
-        dropout=0.1
-    )
-    
-    # Load the model state
-    model.load_state_dict(torch.load(os.path.join(input_dir, 'model.pth')))
-    
-    return model, tokenizer
+# Save the model after training
+torch.save({
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'vocab_size': vocab_size,
+    'd_model': d_model,
+    'num_layers': num_layers,
+    'num_heads': num_heads,
+    'd_ff': d_ff,
+    'dropout': dropout
+}, 'llama3_model.pth')
 
-# After training, save the model
-output_dir = 'llama3_model'
-save_model(model, tokenizer, output_dir)
-
-# To load the model later (in the same script or a different one):
-from Llama3 import LLaMA3Model  # Make sure this import is correct
-from transformers import GPT2Tokenizer  # Assuming you're using GPT2Tokenizer
-
-loaded_model, loaded_tokenizer = load_model(LLaMA3Model, GPT2Tokenizer, 'llama3_model')
-
-# Move the loaded model to the desired device (GPU if available)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-loaded_model.to(device)
-
-print("Model loaded successfully!")
+print("Model saved successfully!")
